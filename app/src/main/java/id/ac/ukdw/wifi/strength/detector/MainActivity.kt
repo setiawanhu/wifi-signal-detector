@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     private var data = JSONArray()
     private lateinit var wifiManager: WifiManager
     private val handler: Handler = Handler()
-    private lateinit var wifiSignalRunnable: Runnable
 
     private lateinit var dialog: ProgressDialog
 
@@ -67,31 +66,7 @@ class MainActivity : AppCompatActivity() {
         //Set the server address text view
         txtServerIp.text = sharedPreferences.getString("server-address", HttpClientUtil.ADDRESS)
 
-        wifiManager = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-
-        wifiSignalRunnable = object : Runnable {
-            override fun run() {
-                //Get wifi list
-                var wifiList: List<ScanResult> = wifiManager.scanResults
-
-                wifiList.forEach { result ->
-                    if (wifiSSIDs.contains(result.SSID)) {
-                        var json = JSONObject()
-
-                        json.put("ssid", result.SSID)
-                        json.put("frequency", result.frequency)
-                        json.put("level", WifiManager.calculateSignalLevel(result.level, 5))
-                        json.put("location_id", locationId + 1)
-
-                        data.put(json)
-                    }
-                }
-
-                txtScanned.text = data.length().toString()
-
-                handler.postDelayed(this, 1500)
-            }
-        }
+        wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         setUpSpinner()
     }
@@ -157,6 +132,30 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         handler.removeCallbacks(wifiSignalRunnable)
+    }
+
+    private var wifiSignalRunnable: Runnable = object : Runnable {
+        override fun run() {
+            //Get wifi list
+            var wifiList: List<ScanResult> = wifiManager.scanResults
+
+            wifiList.forEach { result ->
+                if (wifiSSIDs.contains(result.SSID)) {
+                    var json = JSONObject()
+
+                    json.put("ssid", result.SSID)
+                    json.put("frequency", result.frequency)
+                    json.put("level", WifiManager.calculateSignalLevel(result.level, 5))
+                    json.put("location_id", locationId + 1)
+
+                    data.put(json)
+                }
+            }
+
+            txtScanned.text = data.length().toString()
+
+            handler.postDelayed(this, 1500)
+        }
     }
 
     /**
