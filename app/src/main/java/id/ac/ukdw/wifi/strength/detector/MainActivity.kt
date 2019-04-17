@@ -38,8 +38,7 @@ class MainActivity : AppCompatActivity() {
         "LABFTI2",
         "LAB-BEBAS",
         "@wifi.id",
-        "LAB MOBILE & WEB",
-        "IROMEJAN_10"
+        "LAB MOBILE & WEB"
     )
     private var data = JSONArray()
     private lateinit var wifiManager: WifiManager
