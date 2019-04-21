@@ -19,6 +19,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import com.google.android.material.textfield.TextInputLayout
 import id.ac.ukdw.wifi.strength.detector.utils.HttpClientUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -57,6 +58,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Location service permission request
+        val permissions = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        ActivityCompat.requestPermissions(this, permissions, 0)
 
         //Get the shared preferences
         sharedPreferences = getSharedPreferences("wifi-signal", Context.MODE_PRIVATE)
@@ -162,7 +167,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun setUpSpinner() {
         val spinnerAdapter = ArrayAdapter(
-            this.applicationContext,
+            this,
             android.R.layout.simple_spinner_item,
             resources.getStringArray(R.array.location)
         )
